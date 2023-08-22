@@ -1,0 +1,42 @@
+---
+title: "Covid-19 Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    source_code: embed
+    theme: journal
+---
+
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+Demographics 
+=====================================
+## Row {data-height=100}
+Covid- 19 data from Jan 1, 2020 and Dec 31, 2022 was reported below in each country as reported by the World Health Organization (WHO). 
+
+
+### Interactive World Map
+
+```{r}
+
+```
+
+
+Covid + Socioeconomic Factors
+=====================================
+
+## Row {data-height=100}
+SE Indicators ..................
+
+### Chart 1
+```{r}
+```
+
+
+### Chart 2
+```{r}
+```
