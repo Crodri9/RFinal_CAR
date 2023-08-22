@@ -21,7 +21,7 @@ covid_19_data_cases <- covid_19_data %>%
   select(Date_reported, Country_code, Country, New_cases, Cumulative_cases)
 View(covid_19_data_cases)
 
-# Keeping latest data regarding cumulative deaths from each Country for the year 2022 (December.31.2022)
+# Keeping latest data regarding cumulative cases from each Country for the year 2022 (December.31.2022)
 covid_19_data_latest_cases <- covid_19_data %>%
   select(Date_reported, Country_code, Country, Cumulative_cases)
 
