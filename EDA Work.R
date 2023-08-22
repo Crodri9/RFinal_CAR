@@ -5,6 +5,9 @@
 install.packages("dplyr")
 library(dplyr)
 
+install.packages("tidyverse")
+library(tidyverse)
+
 # Loading the Covid 19 global data 
 covid_19_data <- read.csv("WHO-COVID-19-global-data.csv")
 View(covid_19_data)
@@ -64,4 +67,24 @@ View(df_population)
 filtered_df_population <- df_population %>%
   filter(date %in% c(2022))
 View(filtered_df_population)
+
+# Calculations 
+# Calculating Prevalence (Confirmed cases by Population)
+  # Looking at the "covid_19_data_latest_cases" data frame and "filtered_df_population"data frame
+
+# Case Fatality Rate (Deaths per Infected Population)
+# Selecting the important columns for Covid 19 Population Count 
+covid_19_data_cases_pop <- covid_19_data %>%
+  select(Date_reported, Country_code, Country, Cumulative_cases, Cumulative_deaths)
+
+covid_19_data_cases_pop <- covid_19_data_cases_pop %>%
+  filter(Date_reported == "2022-12-31")
+
+covid_19_data_cases_pop <- covid_19_data_cases_pop %>%
+  mutate(Case_Fatality_Rate = Cumulative_deaths / Cumulative_cases)
+
+View(covid_19_data_cases_pop)
+
+# Mortality Rate (Deaths per Total Population)
+# Looking at the "covid_19_data_latest_deaths" data frame and "filtered_df_population"data frame
 
