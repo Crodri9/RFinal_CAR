@@ -74,16 +74,16 @@ View(filtered_df_population)
 
 # Case Fatality Rate (Deaths per Infected Population)
 # Selecting the important columns for Covid 19 Population Count 
-covid_19_data_cases_pop <- covid_19_data %>%
+covid_19_data_cases_fatality <- covid_19_data %>%
   select(Date_reported, Country_code, Country, Cumulative_cases, Cumulative_deaths)
 
-covid_19_data_cases_pop <- covid_19_data_cases_pop %>%
+covid_19_data_cases_fatality <- covid_19_data_cases_fatality %>%
   filter(Date_reported == "2022-12-31")
 
-covid_19_data_cases_pop <- covid_19_data_cases_pop %>%
+covid_19_data_cases_fatality <- covid_19_data_cases_fatality %>%
   mutate(Case_Fatality_Rate = Cumulative_deaths / Cumulative_cases)
 
-View(covid_19_data_cases_pop)
+View(covid_19_data_cases_fatality)
 
 # Mortality Rate (Deaths per Total Population)
 # Looking at the "covid_19_data_latest_deaths" data frame and "filtered_df_population"data frame
