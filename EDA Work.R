@@ -52,8 +52,16 @@ View(wb_countries())
 
 # Viewing the GDP data for each Country 
 df_gdp <- wb_data("NY.GDP.MKTP.CD")
-View(df_gdp)
 
-filtered_df <- df_gdp %>%
+filtered_df_gdp <- df_gdp %>%
   filter(date %in% c(2020, 2021, 2022))
-View(filtered_df)
+View(filtered_df_gdp)
+
+# Viewing the population data for each Country 
+df_population <- wb_data("SP.POP.TOTL")
+View(df_population)
+
+filtered_df_population <- df_population %>%
+  filter(date %in% c(2022))
+View(filtered_df_population)
+
