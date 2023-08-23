@@ -90,6 +90,8 @@ View(filtered_df_population)
 # Calculating Prevalence (Confirmed cases by Population)
   # Looking at the "covid_19_data_latest_cases" data frame and "filtered_df_population"data frame
 
+
+
 # Case Fatality Rate (Deaths per Infected Population)
 # Selecting the important columns for Covid 19 Population Count 
 covid_19_data_cases_fatality <- covid_19_data %>%
@@ -105,6 +107,14 @@ View(covid_19_data_cases_fatality)
 
 # Mortality Rate (Deaths per Total Population)
 # Looking at the "covid_19_data_latest_deaths" data frame and "filtered_df_population"data frame
+
+mortality_rate_per_country <- covid_19_data_latest_deaths %>%
+  left_join(filtered_df_population, 
+            by = c("Country_code" = "iso2c")) %>%
+  select(-iso3c:-date,-unit:-last_updated) %>%
+  mutate(Mortality_rate = (Cumulative_deaths / SP.POP.TOTL))
+
+  
 ```
 
 # Demographics
