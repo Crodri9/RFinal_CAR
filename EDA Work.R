@@ -51,6 +51,7 @@ install.packages("wbstats")
 library(wbstats)
 
 # Viewing the data set generated from the wbstats package regarding Country information
+  # We can view the average income per Country by looking at the "country" column and the "income_level" column.
 View(wb_countries())
 
 # Viewing the GDP data for each Country 
@@ -59,6 +60,15 @@ df_gdp <- wb_data("NY.GDP.MKTP.CD")
 filtered_df_gdp <- df_gdp %>%
   filter(date %in% c(2020, 2021, 2022))
 View(filtered_df_gdp)
+
+# Viewing the unemployment levels per Country
+  # Looking at "Educational attainment, at least completed short-cycle tertiary, population 25+, total (%) (cumulative)" criteria within the dataset
+df_unemployment <- wb_data("NY.GDP.MKTP.CD") #"NY.GDP.MKTP.CD"
+View(df_unemployment)
+
+filtered_df_unemployment <- df_unemployment %>%
+  filter(date %in% c(2022))
+View(filtered_df_unemployment)
 
 # Viewing the population data for each Country 
 df_population <- wb_data("SP.POP.TOTL")
