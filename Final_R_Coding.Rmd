@@ -16,10 +16,8 @@ library(flexdashboard)
 # EDA AND DATA MANIPULATION
 
 # Loading necessary paclages to R
-install.packages("dplyr")
 library(dplyr)
 
-install.packages("tidyverse")
 library(tidyverse)
 
 # Loading the Covid 19 global data 
@@ -61,7 +59,6 @@ covid_19_data_latest_deaths <- covid_19_data_latest_deaths %>%
 View(covid_19_data_latest_deaths)
 
 # Loading the necessary packages for API search
-install.packages("wbstats")
 library(wbstats)
 
 # Viewing the data set generated from the wbstats package regarding Country information
@@ -89,8 +86,12 @@ View(filtered_df_population)
 
 # Calculating Prevalence (Confirmed cases by Population)
   # Looking at the "covid_19_data_latest_cases" data frame and "filtered_df_population"data frame
-
-
+prevalence <- covid_19_data_latest_cases %>%
+  left_join(filtered_df_population, 
+            by = c("Country_code" = "iso2c")) %>%
+  select(-iso3c:-date,-unit:-last_updated) %>%
+  mutate(prevalence_covid = (Cumulative_cases / SP.POP.TOTL))
+View(prevalence)
 
 # Case Fatality Rate (Deaths per Infected Population)
 # Selecting the important columns for Covid 19 Population Count 
@@ -184,6 +185,8 @@ SE Indicators ..................
 ### Chart 1
 
 ```{r}
+
+
 ```
 
 ### Chart 2
