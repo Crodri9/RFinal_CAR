@@ -185,7 +185,15 @@ SE Indicators ..................
 ### Chart 1
 
 ```{r}
+library(ggplot2)
 
+ggplot(covid_19_data, aes(x = WHO_region, y = Cumulative_cases, fill = WHO_region)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Case Fatality Rate by WHO Region",
+       x = "WHO Region",
+       y = "Case Fatality Rate") +
+  theme_minimal() +
+  scale_fill_discrete(name = "WHO_region")
 
 ```
 
