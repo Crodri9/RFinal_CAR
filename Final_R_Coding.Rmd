@@ -126,6 +126,52 @@ Covid- 19 data from Jan 1, 2020 and Dec 31, 2022 was reported below in each coun
 ### Interactive World Map
 
 ```{r}
+# Load necessary libraries
+library(flexdashboard)
+library(leaflet)
+library(maps)
+library(maptools)
+library(dplyr)
+library(sf)
+library(countrycode)
+
+# Get the world map
+world_map <- map("world", fill = TRUE, plot = FALSE)
+world <- st_as_sf(map2SpatialPolygons(world_map, IDs = world_map$names, proj4string = CRS("+proj=longlat +datum=WGS84")))
+
+# Example filtered_df_population data (replace with your actual data)
+filtered_df_population <- data.frame(
+  iso2c = c("US", "FR"),
+  stat1 = c(100, 200),
+  stat2 = c(300, 400),
+  stat3 = c(500, 600)
+)
+
+# Convert country names to iso2c codes
+iso2c_codes <- countrycode::countrycode(world_map$names, 'country.name', 'iso2c')
+
+# Create a dataframe with spatial data
+world_data <- data.frame(
+  iso2c = iso2c_codes,
+  geometry = world$geometry
+)
+
+# Merge your data with the spatial data
+world <- world_data %>%
+  left_join(filtered_df_population, by = "iso2c") %>%
+  st_as_sf()
+
+# Create the map and add the hover functionality
+leaflet(world) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = "blue", # Simple color for illustration
+    popup = ~paste("Stat1:", stat1, "<br>",
+                   "Stat2:", stat2, "<br>",
+                   "Stat3:", stat3)
+  )
+
+
 
 ```
 
