@@ -89,7 +89,7 @@ View(covid_19_data_cases_fatality)
 # Mortality Rate (Deaths per Total Population)
 # Looking at the "covid_19_data_latest_deaths" data frame and "filtered_df_population"data frame
 
-### Case fatality by Unemployment
+### Case fatality by Unemployment Rate
 
 ```{r}
 
