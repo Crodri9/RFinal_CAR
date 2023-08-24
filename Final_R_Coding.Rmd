@@ -65,7 +65,6 @@ df_gdp <- wb_data("NY.GDP.MKTP.CD")
 
 filtered_df_gdp <- df_gdp %>%
   filter(date %in% c(2020, 2021, 2022))
-View(filtered_df_gdp)
 
 # Viewing the unemployment levels per Country
 df_unemployment <- wb_data("NY.GDP.MKTP.CD")
@@ -75,11 +74,9 @@ filtered_df_unemployment <- df_unemployment %>%
 
 # Viewing the population data for each Country 
 df_population <- wb_data("SP.POP.TOTL")
-View(df_population)
 
 filtered_df_population <- df_population %>%
   filter(date %in% c(2022))
-View(filtered_df_population)
 ```
 
 ```{r, include=FALSE}
