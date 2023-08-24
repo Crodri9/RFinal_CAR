@@ -67,7 +67,7 @@ filtered_df_gdp <- df_gdp %>%
   filter(date %in% c(2020, 2021, 2022))
 
 # Viewing the unemployment levels per Country
-df_unemployment <- wb_data("NY.GDP.MKTP.CD")
+df_unemployment <- wb_data("SL.UEM.TOTL.ZS")
 
 filtered_df_unemployment <- df_unemployment %>%
   filter(date %in% c(2022))
