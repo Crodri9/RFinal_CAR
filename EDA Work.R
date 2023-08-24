@@ -57,7 +57,8 @@ filtered_df_gdp <- df_gdp %>%
 
 # Viewing the unemployment levels per Country
   # Looking at "Educational attainment, at least completed short-cycle tertiary, population 25+, total (%) (cumulative)" criteria within the dataset
-df_unemployment <- wb_data("NY.GDP.MKTP.CD") #"NY.GDP.MKTP.CD"
+df_unemployment <- wb_data("SL.UEM.TOTL.ZS")
+View(df_unemployment)
 
 filtered_df_unemployment <- df_unemployment %>%
   filter(date %in% c(2022))
