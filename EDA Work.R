@@ -89,3 +89,28 @@ View(covid_19_data_cases_fatality)
 # Mortality Rate (Deaths per Total Population)
 # Looking at the "covid_19_data_latest_deaths" data frame and "filtered_df_population"data frame
 
+### Case fatality by Unemployment
+
+```{r}
+
+unemployment_22 <- df_unemployment %>% 
+  filter(date == 2022)
+View(unemployment_22)
+
+unemployment_22 <- unemployment_22 %>%
+  rename(Country = country)
+
+merge_unemployment_cfr <- merge(unemployment_22, covid_19_data_cases_fatality, by = "Country", all.x = TRUE)
+
+View(merge_unemployment_cfr)
+
+library(ggplot2)
+
+ggplot(merge_unemployment_cfr, aes(x= SL.UEM.TOTL.ZS, y = log(Case_Fatality_Rate))) +
+  geom_point() +
+  labs(title = "Case Fatality Rate according to Unemployment Rate",
+       x = "Unemployment Rate",
+       Y = "Case Fatality Rate") + 
+  scale_x_continuous(limits = c(min(merge_unemployment_cfr$SL.UEM.TOTL.ZS), max(merge_unemployment_cfr$SL.UEM.TOTL.ZS)))
+
+```
