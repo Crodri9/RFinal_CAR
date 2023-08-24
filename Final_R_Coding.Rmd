@@ -1,0 +1,203 @@
+---
+title: "Covid-19 Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    source_code: embed
+    theme: journal
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+```{r, include=FALSE}
+# EDA AND DATA MANIPULATION
+
+# Loading necessary paclages to R
+library(dplyr)
+
+library(tidyverse)
+
+# Loading the Covid 19 global data 
+covid_19_data <- read.csv("WHO-COVID-19-global-data.csv")
+View(covid_19_data)
+
+# Checking for NA values in the entire dataframe
+na_summary <- sapply(covid_19_data, function(col) sum(is.na(col)))
+
+# Display the summary of NA values
+print(na_summary) # No NA values were found to disrupt data 
+
+# Case Counts
+# Selecting the important columns for Covid 19 case count 
+covid_19_data_cases <- covid_19_data %>%
+  select(Date_reported, Country_code, Country, New_cases, Cumulative_cases)
+View(covid_19_data_cases)
+
+# Keeping latest data regarding cumulative cases from each Country for the year 2022 (December.31.2022)
+covid_19_data_latest_cases <- covid_19_data %>%
+  select(Date_reported, Country_code, Country, Cumulative_cases)
+
+covid_19_data_latest_cases <- covid_19_data_latest_cases %>%
+  filter(Date_reported == "2022-12-31")
+View(covid_19_data_latest_cases)
+
+# Death Counts
+# Selecting the important columns for Covid 19 death count 
+covid_19_data_deaths <- covid_19_data %>%
+  select(Date_reported, Country_code, Country, New_deaths, Cumulative_deaths)
+View(covid_19_data_deaths)
+
+# Keeping latest data regarding cumulative deaths from each Country for the year 2022 (December.31.2022)
+covid_19_data_latest_deaths <- covid_19_data %>%
+  select(Date_reported, Country_code, Country, Cumulative_deaths)
+
+covid_19_data_latest_deaths <- covid_19_data_latest_deaths %>%
+  filter(Date_reported == "2022-12-31")
+View(covid_19_data_latest_deaths)
+
+# Loading the necessary packages for API search
+library(wbstats)
+
+# Viewing the data set generated from the wbstats package regarding Country information
+View(wb_countries())
+
+# Viewing the GDP data for each Country 
+df_gdp <- wb_data("NY.GDP.MKTP.CD")
+
+filtered_df_gdp <- df_gdp %>%
+  filter(date %in% c(2020, 2021, 2022))
+View(filtered_df_gdp)
+
+# Viewing the population data for each Country 
+df_population <- wb_data("SP.POP.TOTL")
+View(df_population)
+
+filtered_df_population <- df_population %>%
+  filter(date %in% c(2022))
+View(filtered_df_population)
+```
+
+```{r, include=FALSE}
+
+# CALCULATIONS
+
+# Calculating Prevalence (Confirmed cases by Population)
+  # Looking at the "covid_19_data_latest_cases" data frame and "filtered_df_population"data frame
+prevalence <- covid_19_data_latest_cases %>%
+  left_join(filtered_df_population, 
+            by = c("Country_code" = "iso2c")) %>%
+  select(-iso3c:-date,-unit:-last_updated) %>%
+  mutate(prevalence_covid = (Cumulative_cases / SP.POP.TOTL))
+View(prevalence)
+
+# Case Fatality Rate (Deaths per Infected Population)
+# Selecting the important columns for Covid 19 Population Count 
+covid_19_data_cases_fatality <- covid_19_data %>%
+  select(Date_reported, Country_code, Country, Cumulative_cases, Cumulative_deaths)
+
+covid_19_data_cases_fatality <- covid_19_data_cases_fatality %>%
+  filter(Date_reported == "2022-12-31")
+
+covid_19_data_cases_fatality <- covid_19_data_cases_fatality %>%
+  mutate(Case_Fatality_Rate = Cumulative_deaths / Cumulative_cases)
+
+View(covid_19_data_cases_fatality)
+
+# Mortality Rate (Deaths per Total Population)
+# Looking at the "covid_19_data_latest_deaths" data frame and "filtered_df_population"data frame
+
+mortality_rate_per_country <- covid_19_data_latest_deaths %>%
+  left_join(filtered_df_population, 
+            by = c("Country_code" = "iso2c")) %>%
+  select(-iso3c:-date,-unit:-last_updated) %>%
+  mutate(Mortality_rate = (Cumulative_deaths / SP.POP.TOTL))
+
+  
+```
+
+# Demographics
+
+## Row {data-height="100"}
+
+Covid- 19 data from Jan 1, 2020 and Dec 31, 2022 was reported below in each country as reported by the World Health Organization (WHO).
+
+### Interactive World Map
+
+```{r}
+# Load necessary libraries
+library(flexdashboard)
+library(leaflet)
+library(maps)
+library(maptools)
+library(dplyr)
+library(sf)
+library(countrycode)
+
+# Get the world map
+world_map <- map("world", fill = TRUE, plot = FALSE)
+world <- st_as_sf(map2SpatialPolygons(world_map, IDs = world_map$names, proj4string = CRS("+proj=longlat +datum=WGS84")))
+
+# Example filtered_df_population data (replace with your actual data)
+filtered_df_population <- data.frame(
+  iso2c = c("US", "FR"),
+  stat1 = c(100, 200),
+  stat2 = c(300, 400),
+  stat3 = c(500, 600)
+)
+
+# Convert country names to iso2c codes
+iso2c_codes <- countrycode::countrycode(world_map$names, 'country.name', 'iso2c')
+
+# Create a dataframe with spatial data
+world_data <- data.frame(
+  iso2c = iso2c_codes,
+  geometry = world$geometry
+)
+
+# Merge your data with the spatial data
+world <- world_data %>%
+  left_join(filtered_df_population, by = "iso2c") %>%
+  st_as_sf()
+
+# Create the map and add the hover functionality
+leaflet(world) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = "blue", # Simple color for illustration
+    popup = ~paste("Stat1:", stat1, "<br>",
+                   "Stat2:", stat2, "<br>",
+                   "Stat3:", stat3)
+  )
+
+
+
+```
+
+# Covid + Socioeconomic Factors
+
+## Row {data-height="100"}
+
+SE Indicators ..................
+
+### Chart 1
+
+```{r}
+library(ggplot2)
+
+ggplot(covid_19_data, aes(x = WHO_region, y = Cumulative_cases, fill = WHO_region)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Case Fatality Rate by WHO Region",
+       x = "WHO Region",
+       y = "Case Fatality Rate") +
+  theme_minimal() +
+  scale_fill_discrete(name = "WHO_region")
+
+```
+
+### Chart 2
+
+```{r}
+```
