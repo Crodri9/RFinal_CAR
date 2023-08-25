@@ -286,3 +286,61 @@ ggplot(merge_unemployment_cfr, aes(x= SL.UEM.TOTL.ZS, y = log(Case_Fatality_Rate
 
 ```
 
+
+### Case fatality by Unemployment Rate
+
+```{r}
+
+unemployment_22 <- df_unemployment %>% 
+  filter(date == 2022)
+View(unemployment_22)
+
+unemployment_22 <- unemployment_22 %>%
+  rename(Country = country)
+
+merge_unemployment_cfr <- merge(unemployment_22, covid_19_data_cases_fatality, by = "Country", all.x = TRUE)
+
+View(merge_unemployment_cfr)
+
+library(ggplot2)
+
+ggplot(merge_unemployment_cfr, aes(x= SL.UEM.TOTL.ZS, y = log(Case_Fatality_Rate))) +
+  geom_point() +
+  labs(title = "Case Fatality Rate according to Unemployment Rate",
+       x = "Unemployment Rate",
+       Y = "Case Fatality Rate") + 
+  scale_x_continuous(limits = c(min(merge_unemployment_cfr$SL.UEM.TOTL.ZS), max(merge_unemployment_cfr$SL.UEM.TOTL.ZS)))
+
+```
+
+
+
+
+
+``` {r, include = FALSE}
+
+library(dplyr)
+merge_unemployment_cfr <- merge_unemployment_cfr%>%
+mutate(SL.UEM.TOTL.ZS = case_when(
+  SL.UEM.TOTL.ZS > 0 & SL.UEM.TOTL.ZS <= 10 ~ 1,
+  SL.UEM.TOTL.ZS > 10 & SL.UEM.TOTL.ZS <= 20 ~ 2,
+  SL.UEM.TOTL.ZS > 20 & SL.UEM.TOTL.ZS <= 30 ~3,
+         TRUE ~ NA_integer_
+  ))
+
+levels(merge_unemployment_cfr$SL.UEM.TOTL.ZS)
+merge_unemployment_cfr$SL.UEM.TOTL.ZS <- as.factor(merge_unemployment_cfr$SL.UEM.TOTL.ZS)
+
+levels(merge_unemployment_cfr$Country)
+merge_unemployment_cfr$Country <- as.factor(merge_unemployment_cfr$Country)
+
+
+View(merge_unemployment_cfr)
+merge_unemployment_cfr <- merge_unemployment_cfr %>%
+  rename(unemploy_rate = SL.UEM.TOTL.ZS)
+
+anova(lm(Case_Fatality_Rate ~ unemploy_rate, data = merge_unemployment_cfr))
+
+```
+
+
