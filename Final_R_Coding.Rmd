@@ -183,6 +183,7 @@ SE Indicators ..................
 
 ```{r}
 library(ggplot2)
+# visualization of case fatality by WHO region
 
 ggplot(covid_19_data, aes(x = WHO_region, y = Cumulative_cases, fill = WHO_region)) +
   geom_bar(stat = "identity", position = "dodge") +
@@ -198,20 +199,18 @@ ggplot(covid_19_data, aes(x = WHO_region, y = Cumulative_cases, fill = WHO_regio
 ### Case fatality by GDP
 
 ```{r}
-
+# Choose only 2022 data
 gdp_22 <- df_gdp %>% 
   filter(date == 2022)
 View(gdp_22)
-
+# Rename to same column name is case fatality data frame. This will allow for a merge
 gdp_22 <- gdp_22 %>%
   rename(Country = country)
 
 merge_gdp_cfr <- merge(gdp_22, covid_19_data_cases_fatality, by = "Country", all.x = TRUE)
 
-View(merge_gdp_cfr)
-
 library(ggplot2)
-
+# Create plot
 ggplot(merge_gdp_cfr, aes(x= NY.GDP.MKTP.CD, y = log(Case_Fatality_Rate))) +
   geom_point() +
   labs(title = "Case Fatality Rate according to GDP",
@@ -225,6 +224,7 @@ ggplot(merge_gdp_cfr, aes(x= NY.GDP.MKTP.CD, y = log(Case_Fatality_Rate))) +
 
 ```{r}
 
+# Only take 2022 data 
 gdp_22 <- df_gdp %>% 
   filter(date == 2022)
 View(gdp_22)
@@ -239,19 +239,17 @@ pop_22 <- pop_22 %>%
 merge_pop22_cfr <- merge(pop_22, covid_19_data_cases_fatality, by = "Country_code", all.x = TRUE)
 
 View(merge_pop22_cfr)
-
+# rename column for ease of use 
 merge_pop22_cfr <- merge_pop22_cfr %>%
   rename(iso2c = Country_code)
-
+# merge df to one to ensure same number of rows
 merge_pop22_cfr_income <- merge(merge_pop22_cfr, wb_countries(), by = "iso2c", all.x = TRUE)
 
-View(merge_pop22_cfr_income)
-
 library(ggplot2)
-
+# ensure income level is factor 
 merge_pop22_cfr_income$income_level <-as.factor(merge_pop22_cfr_income$income_level)
 
-
+# Create plot 
 ggplot(merge_pop22_cfr_income, aes(x = income_level, y= Case_Fatality_Rate)) +
   geom_boxplot(fill = "lightgrey") + 
   labs(title = "Case Fatality by Income Level",
@@ -263,20 +261,18 @@ ggplot(merge_pop22_cfr_income, aes(x = income_level, y= Case_Fatality_Rate)) +
 ### Case fatality by Unemployment Rate
 
 ```{r}
-
+# selct 2022 data
 unemployment_22 <- df_unemployment %>% 
   filter(date == 2022)
 View(unemployment_22)
-
+# rename column to allow for merge of dataframes 
 unemployment_22 <- unemployment_22 %>%
   rename(Country = country)
 
 merge_unemployment_cfr <- merge(unemployment_22, covid_19_data_cases_fatality, by = "Country", all.x = TRUE)
 
-View(merge_unemployment_cfr)
-
 library(ggplot2)
-
+# Create plot
 ggplot(merge_unemployment_cfr, aes(x= SL.UEM.TOTL.ZS, y = log(Case_Fatality_Rate))) +
   geom_point() +
   labs(title = "Case Fatality Rate according to Unemployment Rate",
