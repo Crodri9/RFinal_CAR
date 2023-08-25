@@ -179,6 +179,7 @@ leaflet(world) %>%
 
 SE Indicators ..................
 
+
 ### Chart 1
 
 ```{r}
@@ -193,7 +194,6 @@ ggplot(covid_19_data, aes(x = WHO_region, y = Cumulative_cases, fill = WHO_regio
   scale_fill_discrete(name = "WHO_region")
 
 ```
-
 
 ### Case fatality by GDP
 
@@ -316,10 +316,10 @@ ggplot(merge_unemployment_cfr, aes(x= SL.UEM.TOTL.ZS, y = log(Case_Fatality_Rate
 
 
 
-
 ``` {r, include = FALSE}
 
 library(dplyr)
+# Unemployment rate was chosen as the socioeconomic indicator of interest
 merge_unemployment_cfr <- merge_unemployment_cfr%>%
 mutate(SL.UEM.TOTL.ZS = case_when(
   SL.UEM.TOTL.ZS > 0 & SL.UEM.TOTL.ZS <= 10 ~ 1,
@@ -334,12 +334,20 @@ merge_unemployment_cfr$SL.UEM.TOTL.ZS <- as.factor(merge_unemployment_cfr$SL.UEM
 levels(merge_unemployment_cfr$Country)
 merge_unemployment_cfr$Country <- as.factor(merge_unemployment_cfr$Country)
 
-
+# Change column title 
 View(merge_unemployment_cfr)
 merge_unemployment_cfr <- merge_unemployment_cfr %>%
   rename(unemploy_rate = SL.UEM.TOTL.ZS)
 
-anova(lm(Case_Fatality_Rate ~ unemploy_rate, data = merge_unemployment_cfr))
+# Run ANOVA on CFR and unemployment rate 
+model <- anova(lm(Case_Fatality_Rate ~ unemploy_rate, data = merge_unemployment_cfr))
+
+p_value <- model$"Pr(>F)"[1]
+
+# Conduct bonferroni post hoc test on p value
+adjusted_val <- p.adjust(p_value, method = "bonferroni")
+print(adjusted_val)
+
 
 ```
 
