@@ -67,7 +67,7 @@ filtered_df_gdp <- df_gdp %>%
   filter(date %in% c(2020, 2021, 2022))
 
 # Viewing the unemployment levels per Country
-df_unemployment <- wb_data("NY.GDP.MKTP.CD")
+df_unemployment <- wb_data("SL.UEM.TOTL.ZS")
 
 filtered_df_unemployment <- df_unemployment %>%
   filter(date %in% c(2022))
@@ -119,7 +119,7 @@ mortality_rate_per_country <- covid_19_data_latest_deaths %>%
 
 ## Row {data-height="100"}
 
-Covid- 19 data from Jan 1, 2020 and Dec 31, 2022 was reported below in each country as reported by the World Health Organization (WHO).
+Covid- 19 data from Jan 1, 2020 and Dec 31, 2022 was reported below in each country as reported by the World Health Organization (WHO). Case fatality rate, prevalence, and mortality rate are depicted below.
 
 ### Interactive World Map
 
@@ -177,9 +177,16 @@ leaflet(world) %>%
 
 ## Row {data-height="100"}
 
-SE Indicators ..................
+Chart 1 - Case Fatality Rate according to GDP: In the graph below, case fatality rates are being compared to each Country’s Gross Domestic Product (GDP) to form a scatter plot. The majority of the data points form a vertical line, which signifies that even with different rates of fatality, GDP stays consistent throughout. There are a few outliers, but the majority do not stray from the line.  
 
-### Chart 1
+Chart 2 - Case Fatality according to Income: In the second graph, case fatality rates are being compared to the different levels of the average population's income of various countries. Income levels were divided into 5 categories: High Income, Low Income, Lower Middle Income, Not Classified, Upper Middle Income.
+As can be seen by the box plots, the mean case fatality is higher for the "Low Income" and "Lower Middle Income" categories. This signifies that there are more case fatalities for countries in which the average person has a lower income. 
+The mean case fatality is lower for the "Upper Income" and "Upper Middle Income" categories, with the prior have the lowest mean.
+
+Chart 3 - Case Fatality Rate According to Unemployment Rate: In the third graph, case fatality rates are being compared to the unemployment rates of each country. As can be seen by the scatter plot, a positive relationship is established between the two variables. The higher the unemployment rate, the higher the case fatality rate is.
+
+
+### Case fatality by WHO region
 
 ```{r}
 library(ggplot2)
@@ -194,7 +201,6 @@ ggplot(covid_19_data, aes(x = WHO_region, y = Cumulative_cases, fill = WHO_regio
   scale_fill_discrete(name = "WHO_region")
 
 ```
-
 
 ### Case fatality by GDP
 
@@ -220,6 +226,7 @@ ggplot(merge_gdp_cfr, aes(x= NY.GDP.MKTP.CD, y = log(Case_Fatality_Rate))) +
 
 ```
 
+## Row {data-height = "100"}
 ### Case Fatality by Income
 
 ```{r}
